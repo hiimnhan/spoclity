@@ -12,12 +12,10 @@ import (
 )
 
 var (
-	focusedStyle        = lipgloss.NewStyle().Foreground(lipgloss.Color("205"))
-	blurredStyle        = lipgloss.NewStyle().Foreground(lipgloss.Color("240"))
-	cursorStyle         = focusedStyle.Copy()
-	noStyle             = lipgloss.NewStyle()
-	helpStyle           = blurredStyle.Copy()
-	cursorModeHelpStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("244"))
+	focusedStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("205"))
+	blurredStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("240"))
+	cursorStyle  = focusedStyle.Copy()
+	noStyle      = lipgloss.NewStyle()
 
 	focusedButton = focusedStyle.Copy().Render("[ Submit ]")
 	blurredButton = fmt.Sprintf("[ %s ]", blurredStyle.Render("Submit"))
@@ -77,7 +75,9 @@ func (m *model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			s := msg.String()
 
 			if s == "enter" && m.focusIndex == len(m.inputs) {
-				return m, tea.Quit
+				m.credential.ClientID = m.inputs[0].Value()
+				m.credential.ClientSecret = m.inputs[1].Value()
+				return m, handleAuth(m.credential.ClientID, m.credential.ClientSecret)
 			}
 
 			if s == "up" || s == "shift+tab" {
@@ -127,7 +127,9 @@ func (m *model) updateInputs(msg tea.Msg) tea.Cmd {
 
 func handleAuth(clientID string, clientSecret string) tea.Cmd {
 	return func() tea.Msg {
-		return nil
+		fmt.Println(clientID)
+		fmt.Println(clientSecret)
+		return tea.Quit // why I can not quit
 	}
 }
 
